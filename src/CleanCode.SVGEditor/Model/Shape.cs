@@ -11,34 +11,40 @@ namespace CleanCode.SVGEditor.Model
 
         public virtual void SetAttribute(string attribute, string value)
         {
+            //X and Y attributes are different for different shapes so we get the one we need and reuse the code.
+            string xAttributeForElement = GetXAttribute();
+            string yAttributeForElement = GetYAttribute();
+            
+            if (attribute.Equals(xAttributeForElement))
+            {
+                if (int.TryParse(value, out int result))
+                {
+                    Location.X = result;
+                }
+                return;
+            }
+
+            if (attribute.Equals(yAttributeForElement))
+            {
+                if (int.TryParse(value, out int result))
+                {
+                    Location.Y = result;
+                }
+                return;
+            }
+
             switch (attribute)
             {
                 case SVGShapeAttributes.Stroke:
                 {
-                        this.Stroke = value;
+                        Stroke = value;
                         return;
                 }
                 case SVGShapeAttributes.StrokeWidth:
                 {
                     if (int.TryParse(value, out int result))
                     {
-                        this.StrokeWidth = result;
-                    }
-                    return;
-                }
-                case SVGShapeAttributes.X:
-                {
-                    if (int.TryParse(value, out int result))
-                    {
-                        this.Location.X = result;
-                    }
-                    return;
-                }
-                case SVGShapeAttributes.Y:
-                {
-                    if (int.TryParse(value, out int result))
-                    {
-                        this.Location.Y = result;
+                        StrokeWidth = result;
                     }
                     return;
                 }
@@ -47,12 +53,17 @@ namespace CleanCode.SVGEditor.Model
 
         public virtual void Translate(int dX, int dY)
         {
-            this.Location.Translate(dX, dY);   
+            Location.Translate(dX, dY);   
         }
 
         public abstract void Print(IWriter writer);
         public abstract string GetTag();
         public abstract bool IsWithin(IContainable shape);
-        
+
+
+        //X and Y location attributes have different names for the different shapes.
+        protected abstract string GetXAttribute();
+        protected abstract string GetYAttribute();
+
     }
 }

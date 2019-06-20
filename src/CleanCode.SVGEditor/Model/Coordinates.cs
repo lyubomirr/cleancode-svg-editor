@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CleanCode.SVGEditor.Model
+﻿namespace CleanCode.SVGEditor.Model
 {
     internal class Location
     {
         public Location(int x, int y)
         {
-            this.X = x;
-            this.Y = y;
+            X = x;
+            Y = y;
         }
 
         public int X { get; set; }
@@ -17,8 +13,8 @@ namespace CleanCode.SVGEditor.Model
 
         public void Translate(int dX, int dY)
         {
-            this.X += dX;
-            this.Y += dY;
+            X += dX;
+            Y += dY;
         }
     }
 }

@@ -27,25 +27,25 @@ namespace CleanCode.SVGEditor.Model
         {
             StringBuilder builder = new StringBuilder();
             builder.Append($"<{TagName} ");
-            builder.Append($"{SVGShapeAttributes.X}=\"{this.Location.X}\" ");
-            builder.Append($"{SVGShapeAttributes.Y}=\"{this.Location.Y}\" ");
-            builder.Append($"{SVGShapeAttributes.Width}=\"{this.Width}\" ");
-            builder.Append($"{SVGShapeAttributes.Height}=\"{this.Height}\" ");
-            builder.Append($"{SVGShapeAttributes.Fill}=\"{this.Fill ?? "black"}\" ");
+            builder.Append($"{SVGShapeAttributes.X}=\"{Location.X}\" ");
+            builder.Append($"{SVGShapeAttributes.Y}=\"{Location.Y}\" ");
+            builder.Append($"{SVGShapeAttributes.Width}=\"{Width}\" ");
+            builder.Append($"{SVGShapeAttributes.Height}=\"{Height}\" ");
+            builder.Append($"{SVGShapeAttributes.Fill}=\"{Fill ?? "black"}\" ");
 
-            if (this.Stroke != null)
+            if (Stroke != null)
             {
-                builder.Append($"{SVGShapeAttributes.Stroke}=\"{this.Stroke}\" ");
-                builder.Append($"{SVGShapeAttributes.StrokeWidth}=\"{this.StrokeWidth}\"");
+                builder.Append($"{SVGShapeAttributes.Stroke}=\"{Stroke}\" ");
+                builder.Append($"{SVGShapeAttributes.StrokeWidth}=\"{StrokeWidth}\"");
             }
 
-            builder.Append($" />");
+            builder.Append(" />");
             return builder.ToString();
         }
 
         public override bool IsWithin(IContainable shape)
         {
-            var topLeft = GetBottomLeftPoint();
+            var topLeft = GetTopLeftPoint();
             var topRight = GetTopRightPoint();
             var bottomLeft = GetBottomLeftPoint();
             var bottomRight = GetBottomRightPoint();
@@ -59,6 +59,16 @@ namespace CleanCode.SVGEditor.Model
                 );
 
             return isWithin;
+        }
+
+        protected override string GetXAttribute()
+        {
+            return SVGShapeAttributes.X;
+        }
+
+        protected override string GetYAttribute()
+        {
+            return SVGShapeAttributes.Y;
         }
 
         public override void Print(IWriter writer)
@@ -80,14 +90,14 @@ namespace CleanCode.SVGEditor.Model
             {
                 case SVGShapeAttributes.Fill:
                 {
-                    this.Fill = value;
+                    Fill = value;
                     return;
                 }
                 case SVGShapeAttributes.Width:
                 {
                     if (int.TryParse(value, out int result))
                     {
-                        this.Width = result;
+                        Width = result;
                     }
                     return;
                 }
@@ -95,7 +105,7 @@ namespace CleanCode.SVGEditor.Model
                 {
                     if (int.TryParse(value, out int result))
                     {
-                        this.Height = result;
+                        Height = result;
                     }
                     return;
                 }
@@ -109,19 +119,19 @@ namespace CleanCode.SVGEditor.Model
 
         private Location GetTopRightPoint()
         {
-            var topRight = new Location(this.Location.X + this.Width, this.Location.Y);
+            var topRight = new Location(Location.X + Width, Location.Y);
             return topRight;
         }
 
         private Location GetBottomLeftPoint()
         {
-            var bottomLeft = new Location(this.Location.X, this.Location.Y + this.Height);
+            var bottomLeft = new Location(Location.X, Location.Y + Height);
             return bottomLeft;
         }
 
         private Location GetBottomRightPoint()
         {
-            var bottomRight = new Location(this.Location.X + this.Width, this.Location.Y + this.Height);
+            var bottomRight = new Location(Location.X + Width, Location.Y + Height);
             return bottomRight;
         }
     }
