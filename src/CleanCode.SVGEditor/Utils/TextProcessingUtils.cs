@@ -54,5 +54,27 @@ namespace CleanCode.SVGEditor.Utils
 
             return tokens;
         }
+
+        /// <summary>
+        /// Splits attributes with equal sign to key and value.
+        /// </summary>
+        /// <param name="arguments">The source text splitted by spaces.</param>
+        /// <returns>IDictionary with splited keys and values.</returns>
+        public static IDictionary<string, string> SplitAttributes(IList<string> arguments)
+        {
+            IDictionary<string, string> attributes = new Dictionary<string, string>();
+            foreach (var arg in arguments)
+            {
+                int equalsPosition = arg.IndexOf('=');
+                if (equalsPosition != -1)
+                {
+                    string key = arg.Substring(0, equalsPosition);
+                    string value = arg.Substring(equalsPosition + 1, arg.Length - equalsPosition - 1);
+                    attributes.Add(key, value);
+                }
+            }
+
+            return attributes;
+        }
     }
 }

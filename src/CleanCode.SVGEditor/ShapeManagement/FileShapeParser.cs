@@ -1,34 +1,77 @@
 ﻿using CleanCode.SVGEditor.Interfaces;
 using CleanCode.SVGEditor.Model;
+using CleanCode.SVGEditor.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CleanCode.SVGEditor.ShapeManagement
 {
-    internal class FileShapeParser : IShapeParser
+    internal class FileShapeParser : IFileShapeParser
     {
-        private string _filePath;
-        
-        public async Task<IList<Shape>> GetShapesAsync(string filePath)
+        private IShapeFactory _shapeFactory;
+        private IWriter _writer;
+
+        public FileShapeParser(IShapeFactory shapeFactory, IWriter writer)
+        {
+            _shapeFactory = shapeFactory;
+            _writer = writer;
+        }
+
+        public string CurrentFile { get; private set; }
+
+        public void ClearFileName()
+        {
+            CurrentFile = string.Empty;
+        }
+
+        public IList<Shape> GetShapes(string filePath)
         {
             if(!File.Exists(filePath))
             {
                 throw new FileNotFoundException($"File with path: {filePath} doesn't exist!");
             }
 
-            var fileBytes = await File.ReadAllBytesAsync(filePath);
-            _filePath = filePath;
-            var fileText = System.Text.Encoding.UTF8.GetString(fileBytes);
-            var tags = GetTags(fileText);
+            CurrentFile = filePath;
+            var fileText = GetFileContents();
 
-            return new List<Shape>();
+            var tags = GetTags(fileText);
+            var shapes = ParseTagsToObjects(tags);
+
+            return shapes;
         }
 
-        public void SaveShapes()
+        public void SaveShapes(IList<Shape> shapes)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(CurrentFile))
+            {
+                _writer.WriteLine("No file loaded!");
+                return;
+            }
+
+            var fileContent = GetFileContents();
+
+            int svgStart = fileContent.IndexOf("<svg");
+            int svgContentStart = fileContent.IndexOf('>', svgStart);
+            int svgEnd = fileContent.IndexOf("</svg>");
+
+            StringBuilder newContentBuilder = new StringBuilder();
+            //Append everything before svg tag.
+            newContentBuilder.Append(fileContent.Substring(0, svgContentStart + 1));
+
+            //Append new tags.
+            foreach (var shape in shapes)
+            {
+                newContentBuilder.Append(shape.GetTag());
+            }
+
+            //Append everything after svg tag.
+            newContentBuilder.Append(fileContent.Substring(svgEnd, fileContent.Length - svgEnd));
+
+            File.WriteAllText(CurrentFile, newContentBuilder.ToString());
+            _writer.WriteLine("Successfully saved file!");
         }
 
         private IList<string> GetTags(string fileContent)
@@ -63,6 +106,32 @@ namespace CleanCode.SVGEditor.ShapeManagement
             }
 
             return tags;
+        }
+
+        private IList<Shape> ParseTagsToObjects(IList<string> tags)
+        {
+            IList<Shape> parsedShapes = new List<Shape>();
+
+            foreach (var tag in tags)
+            {
+                IList<string> tagArguments = TextProcessingUtils.SplitTokens(tag);
+                IDictionary<string, string> shapeAttributes = TextProcessingUtils.SplitAttributes(tagArguments);
+
+                if (ShapeMappings.TagToShapeTypeMap.TryGetValue(tagArguments[0], out ShapeType type))
+                {
+                    Shape parsed = _shapeFactory.CreateShape(type, shapeAttributes);
+                    parsedShapes.Add(parsed);
+                }
+            }
+
+            return parsedShapes;
+        }
+
+        private string GetFileContents()
+        {
+            var fileBytes = File.ReadAllBytes(CurrentFile);
+            var fileText = System.Text.Encoding.UTF8.GetString(fileBytes);
+            return fileText;
         }
     }
 }

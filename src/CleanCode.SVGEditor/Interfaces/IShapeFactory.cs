@@ -5,6 +5,6 @@ namespace CleanCode.SVGEditor.Interfaces
 {
     internal interface IShapeFactory
     {
-        Shape CreateShape(IDictionary<string, string> commandLineArguments);
+        Shape CreateShape(ShapeType type, IDictionary<string, string> properties);
     }
 }

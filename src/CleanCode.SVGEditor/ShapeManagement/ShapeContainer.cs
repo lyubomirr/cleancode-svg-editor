@@ -18,15 +18,28 @@ namespace CleanCode.SVGEditor.ShapeManagement
 
         public void PrintShapes()
         {
+            if (Shapes.Count == 0)
+            {
+                _writer.WriteLine("No shapes loaded!");
+                return;
+            }
+
             int number = 1;
             foreach (var shape in Shapes)
             {
                 _writer.WriteLine($"{number}. {shape.ToString()}");
+                number++;
             }
         }
 
         public void EraseShape(int number)
         {
+            if (Shapes.Count == 0)
+            {
+                _writer.WriteLine("No shapes loaded!");
+                return;
+            }
+
             if (number > Shapes.Count)
             {
                 _writer.WriteLine("No shape with this number!");
@@ -34,29 +47,47 @@ namespace CleanCode.SVGEditor.ShapeManagement
             }
 
             Shapes.RemoveAt(number - 1);
+            _writer.WriteLine($"Erased shape with number {number}.");
+
         }
 
         public void TranslateAll(int dX, int dY)
         {
+            if (Shapes.Count == 0)
+            {
+                _writer.WriteLine("No shapes loaded! ");
+                return;
+            }
+
+
             foreach(var shape in Shapes)
             {
                 shape.Translate(dX, dY);
             }
+
+            _writer.WriteLine("Translated all figures.");
         }
 
         public void Translate(int dX, int dY, int shapeNumber)
         {
-            if (shapeNumber > Shapes.Count)
+            if (shapeNumber > Shapes.Count || Shapes.Count == 0)
             {
                 _writer.WriteLine("No shape with this number!");
                 return;
             }
 
             Shapes[shapeNumber - 1].Translate(dX, dY);
+            _writer.WriteLine($"Shape {shapeNumber} translated.");
         }
 
         public void CheckWithin(IContainable containableShape)
         {
+            if (Shapes.Count == 0)
+            {
+                _writer.WriteLine("No shapes loaded!");
+                return;
+            }
+
             bool isThereWithin = false;
 
             foreach (var shape in Shapes)
@@ -70,7 +101,7 @@ namespace CleanCode.SVGEditor.ShapeManagement
 
             if (!isThereWithin)
             {
-                _writer.Write("No shapes within the entered one!");
+                _writer.WriteLine("No shapes within the entered one!");
             }
         }
     }

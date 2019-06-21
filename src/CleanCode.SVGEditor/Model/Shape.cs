@@ -15,13 +15,13 @@ namespace CleanCode.SVGEditor.Model
         public string Stroke { get; private set; }
         public int StrokeWidth { get; private set; }
         
-        public virtual void SetAttribute(string attribute, string value)
+        public virtual void SetProperty(string svgProperty, string value)
         {
             //X and Y attributes are different for different shapes so we get the one we need and reuse the code.
             string xAttributeForElement = GetXAttribute();
             string yAttributeForElement = GetYAttribute();
             
-            if (attribute.Equals(xAttributeForElement))
+            if (svgProperty.Equals(xAttributeForElement))
             {
                 if (int.TryParse(value, out int result))
                 {
@@ -30,7 +30,7 @@ namespace CleanCode.SVGEditor.Model
                 return;
             }
 
-            if (attribute.Equals(yAttributeForElement))
+            if (svgProperty.Equals(yAttributeForElement))
             {
                 if (int.TryParse(value, out int result))
                 {
@@ -39,7 +39,7 @@ namespace CleanCode.SVGEditor.Model
                 return;
             }
 
-            switch (attribute)
+            switch (svgProperty)
             {
                 case SVGShapeAttributes.Stroke:
                 {

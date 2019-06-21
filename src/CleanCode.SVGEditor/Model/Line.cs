@@ -21,7 +21,7 @@ namespace CleanCode.SVGEditor.Model
             var builder = new StringBuilder();
             builder.Append($"Line X1: {Location.X}, Y1: {Location.Y}, X2: {EndLocation.X}, Y2: {EndLocation.Y}");
 
-            if (Stroke != null)
+            if (!string.IsNullOrEmpty(Stroke))
             {
                 builder.Append($", Stroke: {Stroke}, Stroke Width: {StrokeWidth}");
             }
@@ -64,9 +64,9 @@ namespace CleanCode.SVGEditor.Model
             return SVGShapeAttributes.Y1;
         }
 
-        public override void SetAttribute(string attribute, string value)
+        public override void SetProperty(string attribute, string value)
         {
-            base.SetAttribute(attribute, value);
+            base.SetProperty(attribute, value);
 
             if (int.TryParse(value, out int result))
             {

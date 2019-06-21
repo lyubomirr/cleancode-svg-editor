@@ -10,5 +10,6 @@
         public const string Translate = "translate";
         public const string Within = "within";
         public const string Exit = "exit";
+        public const string Erase = "erase";
     }
 }

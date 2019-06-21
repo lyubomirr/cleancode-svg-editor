@@ -79,10 +79,10 @@ namespace CleanCode.SVGEditor.Model
         public override string ToString()
         {
             var builder = new StringBuilder();
-            builder.Append($@"Rectangle X: {Location.X}, Y: {Location.Y}, Width: {Width}, 
-                Height: {Height}, Fill: {Fill}");
+            builder.Append($"Rectangle X: {Location.X}, Y: {Location.Y}, Width: {Width}, " +
+                $"Height: {Height}, Fill: {Fill}");
 
-            if (Stroke != null)
+            if (!string.IsNullOrEmpty(Stroke))
             {
                 builder.Append($", Stroke: {Stroke}, Stroke Width: {StrokeWidth}");
             }
@@ -90,9 +90,9 @@ namespace CleanCode.SVGEditor.Model
             return builder.ToString();
         }
 
-        public override void SetAttribute(string attribute, string value)
+        public override void SetProperty(string attribute, string value)
         {
-            base.SetAttribute(attribute, value);
+            base.SetProperty(attribute, value);
 
             switch (attribute)
             {

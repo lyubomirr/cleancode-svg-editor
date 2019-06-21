@@ -27,7 +27,7 @@ namespace CleanCode.SVGEditor.Model
             builder.Append($"{SVGShapeAttributes.Radius}=\"{Radius}\" ");
             builder.Append($"{SVGShapeAttributes.Fill}=\"{Fill ?? "black"}\" ");
 
-            if (Stroke != null)
+            if (!string.IsNullOrEmpty(Stroke))
             {
                 builder.Append($"{SVGShapeAttributes.Stroke}=\"{Stroke}\" ");
                 builder.Append($"{SVGShapeAttributes.StrokeWidth}=\"{StrokeWidth}\"");
@@ -84,9 +84,9 @@ namespace CleanCode.SVGEditor.Model
             return doesContain;
         }
 
-        public override void SetAttribute(string attribute, string value)
+        public override void SetProperty(string attribute, string value)
         {
-            base.SetAttribute(attribute, value);
+            base.SetProperty(attribute, value);
 
             switch (attribute)
             {
@@ -116,7 +116,7 @@ namespace CleanCode.SVGEditor.Model
                 {
                     if (int.TryParse(value, out int result))
                     {
-                        Location.Y = result > 0 ? result : 0; //Negative radius is an error.
+                        Radius = result > 0 ? result : 0; //Negative radius is an error.
                     }
                     return;
                 }
