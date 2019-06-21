@@ -8,6 +8,11 @@ namespace CleanCode.SVGEditor.Model
     {
         public const string TagName = "rect";
 
+        public Rectangle() : base()
+        {
+            Fill = string.Empty;
+        }
+
         public int Width { get; private set; }
         public int Height { get; private set; }
         public string Fill { get; set; }       
@@ -33,7 +38,7 @@ namespace CleanCode.SVGEditor.Model
             builder.Append($"{SVGShapeAttributes.Height}=\"{Height}\" ");
             builder.Append($"{SVGShapeAttributes.Fill}=\"{Fill ?? "black"}\" ");
 
-            if (Stroke != null)
+            if (!string.IsNullOrEmpty(Stroke))
             {
                 builder.Append($"{SVGShapeAttributes.Stroke}=\"{Stroke}\" ");
                 builder.Append($"{SVGShapeAttributes.StrokeWidth}=\"{StrokeWidth}\"");
@@ -71,15 +76,18 @@ namespace CleanCode.SVGEditor.Model
             return SVGShapeAttributes.Y;
         }
 
-        public override void Print(IWriter writer)
+        public override string ToString()
         {
-            writer.Write($@"Rectangle X: {Location.X}, Y: {Location.Y}, Width: {Width}, 
+            var builder = new StringBuilder();
+            builder.Append($@"Rectangle X: {Location.X}, Y: {Location.Y}, Width: {Width}, 
                 Height: {Height}, Fill: {Fill}");
 
             if (Stroke != null)
             {
-                writer.WriteLine($", Stroke: {Stroke}, Stroke Width: {StrokeWidth}");
+                builder.Append($", Stroke: {Stroke}, Stroke Width: {StrokeWidth}");
             }
+
+            return builder.ToString();
         }
 
         public override void SetAttribute(string attribute, string value)

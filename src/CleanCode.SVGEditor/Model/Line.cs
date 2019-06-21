@@ -9,16 +9,24 @@ namespace CleanCode.SVGEditor.Model
     {
         public const string TagName = "line";
 
+        public Line() : base()
+        {
+            EndLocation = new Location(0, 0);
+        }
+
         public Location EndLocation { get; private set; }
 
-        public override void Print(IWriter writer)
+        public override string ToString()
         {
-            writer.Write($@"Line X1: {Location.X}, Y1: {Location.Y}, X2: {EndLocation.X}, Y2: {EndLocation.Y}");
+            var builder = new StringBuilder();
+            builder.Append($"Line X1: {Location.X}, Y1: {Location.Y}, X2: {EndLocation.X}, Y2: {EndLocation.Y}");
 
             if (Stroke != null)
             {
-                writer.WriteLine($", Stroke: {Stroke}, Stroke Width: {StrokeWidth}");
+                builder.Append($", Stroke: {Stroke}, Stroke Width: {StrokeWidth}");
             }
+
+            return builder.ToString();
         }
 
         public override string GetTag()
@@ -30,7 +38,7 @@ namespace CleanCode.SVGEditor.Model
             builder.Append($"{SVGShapeAttributes.X2}=\"{EndLocation.X}\" ");
             builder.Append($"{SVGShapeAttributes.Y2}=\"{EndLocation.Y}\" ");
 
-            if (Stroke != null)
+            if (!string.IsNullOrEmpty(Stroke))
             {
                 builder.Append($"{SVGShapeAttributes.Stroke}=\"{Stroke}\" ");
                 builder.Append($"{SVGShapeAttributes.StrokeWidth}=\"{StrokeWidth}\"");

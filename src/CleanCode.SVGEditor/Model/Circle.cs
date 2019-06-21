@@ -9,8 +9,14 @@ namespace CleanCode.SVGEditor.Model
     {
         public const string TagName = "circle";
 
+        public Circle() : base()
+        {
+            Fill = string.Empty;
+        }
+
         public int Radius { get; private set; }
-        public string Fill { get; private set; }
+        public string Fill { get; private set; } 
+
 
         public override string GetTag()
         {
@@ -59,14 +65,17 @@ namespace CleanCode.SVGEditor.Model
             return SVGShapeAttributes.Cy;
         }
 
-        public override void Print(IWriter writer)
+        public override string ToString()
         {
-            writer.Write($@"Circle X: {Location.X}, Y: {Location.Y}, Radius: {Radius}, Fill: {Fill}");
+            StringBuilder builder = new StringBuilder();
+            builder.Append($"Circle X: {Location.X}, Y: {Location.Y}, Radius: {Radius}, Fill: {Fill}");
 
-            if (Stroke != null)
+            if (!string.IsNullOrEmpty(Stroke))
             {
-                writer.WriteLine($", Stroke: {Stroke}, Stroke Width: {StrokeWidth}");
+                builder.Append($", Stroke: {Stroke}, Stroke Width: {StrokeWidth}");
             }
+
+            return builder.ToString();
         }
 
         public bool DoesContainThePoint(Location coordinates)
