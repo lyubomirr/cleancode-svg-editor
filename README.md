@@ -1,4 +1,4 @@
-# CleanCode.SVGEditor
+# SVGEditor
 Simple SVG editor for university assignment.
 Works with circle, rectangle and line.
 
